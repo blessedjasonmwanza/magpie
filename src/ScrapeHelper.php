@@ -21,13 +21,13 @@ class ScrapeHelper
     public static function color_variants($product_node){
         
         return $product_node->filter('div.flex-wrap.justify-center.-mx-2 .px-2')->each(function($node) use ($product_node){
-            // global $availability;
-            // global ;
+            $shipping_text = $product_node->filter('div.my-4.text-sm.block.text-center')->last()->text();
             $date_string = trim(str_replace([
-                'Available', 'Delivery', 'on', 'from', 'by', 
+                'Available', 'Delivery', 'on', 'from', 'by',
                 "Free Shipping", "Availability: Out of Stock",
-                "Free Delivery ", "Delivers ", "Unavailable for delivery"
-            ], '', $product_node->filter('div.my-4.text-sm.block.text-center')->last()->text()));
+                "Free Delivery ", "Delivers ", "Unavailable for delivery",
+                ' and have it ', 'Order within ', "Free",
+            ], '', $shipping_text));
             return [
                 "title" => $product_node->filter('.product-name')->text(),
                 "price" => floatval((str_replace('£', '', $product_node->filter('div.my-8.block.text-center.text-lg')->text()))),
@@ -36,7 +36,7 @@ class ScrapeHelper
                 "color" => $node->filter('.rounded-full')->attr('data-colour'),
                 "availabilityText" => str_replace('Availability: ', '', $product_node->filter('div.my-4.text-sm.block.text-center')->text()),
                 "isAvailable" => substr(strtolower(str_replace(' ', '', str_replace('Availability: ', '', $product_node->filter('div.my-4.text-sm.block.text-center')->text()))),0, 2) == 'in' ? true : false,
-                "shippingText" => $product_node->filter('div.my-4.text-sm.block.text-center')->first()->text(),
+                "shippingText" => $shipping_text,
                 "shippingDate" => strlen(strtotime($date_string)) > 0 ? date('Y-m-d', strtotime($date_string)) : $date_string,
     
             ];
