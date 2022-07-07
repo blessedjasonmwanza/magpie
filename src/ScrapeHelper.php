@@ -15,7 +15,7 @@ class ScrapeHelper
     }
     public static function to_mb($str){
         $text = str_replace(['-', ' '], '', strtolower($str));
-        return substr($text, -2) == 'mb' ? substr($text, 0, strlen($text) - 2) : floatval(substr($text, 0, strlen($text) - 2)) * 1000;
+        return substr($text, -2) == 'mb' ? floatval(substr($text, 0, strlen($text) - 2)) : floatval(substr($text, 0, strlen($text) - 2)) * 1000;
     }
 
     public static function color_variants($product_node){
